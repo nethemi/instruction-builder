@@ -1,0 +1,36 @@
+window.STATE =
+{
+  "slug": "instruction-mvp",
+  "dir": "2026-11-17-instruction-mvp--wip",
+  "title": "Конструктор инструкций",
+  "mode": "semi",
+  "depth": "normal",
+  "polish": null,
+  "tier": null,
+  "briefFile": "2026-11-17-brief.md",
+  "memoryFile": "AGENTS.md",
+  "skillDir": "C:/Users/sanni/.agents/skills/autopilot",
+  "startedAt": "2026-11-17T12:25:10+07:00",
+  "updatedAt": "2026-11-17T12:27:12+07:00",
+  "finishedAt": null,
+  "stages": [
+    { "id": "preflight", "status": "done", "startedAt": "2026-11-17T12:25:10+07:00", "finishedAt": "2026-11-17T12:27:12+07:00" },
+    { "id": "manifest", "status": "done", "startedAt": "2026-11-17T12:27:12+07:00", "finishedAt": "2026-11-17T12:27:12+07:00" },
+    { "id": "briefing", "status": "skipped", "note": "Вопросов не потребовалось: неопределённые внешние материалы принимаются через загрузку, LLM-провайдер настраивается адаптером" },
+    { "id": "spec", "status": "active", "startedAt": "2026-11-17T12:27:12+07:00" },
+    { "id": "plan", "status": "pending" },
+    { "id": "build", "status": "pending" },
+    { "id": "review", "status": "pending" },
+    { "id": "final", "status": "pending" }
+  ],
+  "requirements": { "total": 0, "done": 0, "inTicket": 0, "inSpec": 0, "placeholder": 0, "deferred": 0, "dropped": 0 },
+  "tickets": [],
+  "singlePass": null,
+  "tests": null,
+  "debt": { "placeholders": [], "assumptions": [], "emptyEnv": [] },
+  "additions": [],
+  "coverage": null,
+  "concerns": [],
+  "reviewers": { "manifestSpec": null, "craft": null },
+  "blind": null
+}
