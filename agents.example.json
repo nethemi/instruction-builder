@@ -1,23 +1,33 @@
 [
   {
-    "name": "Yandex GPT — Технический писатель (тест 1)",
-    "base_url": "https://llm.api.cloud.yandex.net/v1",
-    "api_key_env": "YANDEX_API_KEY_1",
-    "model": "qwen3.6-35b",
-    "note": "Agent Atelier: Технический писатель. Endpoint и модель проверить в консоли Yandex Cloud."
+    "name": "Yandex — чистая модель (chat completions)",
+    "base_url": "https://ai.api.cloud.yandex.net/v1",
+    "api_key_env": "YANDEX_API_KEY",
+    "auth_scheme": "Api-Key",
+    "model": "gpt://<folder-id>/qwen3.6-35b",
+    "extra_headers": {"x-folder-id": "<folder-id>"},
+    "note": "Полный промпт (правила, шаблон, пример) собирает MVP. Если авторизация не пройдёт — смените auth_scheme на Bearer."
   },
   {
-    "name": "Тестовый агент 2",
-    "base_url": "https://example.com/v1",
-    "api_key_env": "AGENT_2_API_KEY",
-    "model": "укажите-модель",
-    "note": "Замените base_url, model и имя переменной ключа на свои."
+    "name": "Yandex — агент через Responses API",
+    "base_url": "https://ai.api.cloud.yandex.net/v1",
+    "api_key_env": "YANDEX_API_KEY",
+    "auth_scheme": "Api-Key",
+    "api": "responses",
+    "extra_headers": {"OpenAI-Project": "<folder-id>"},
+    "extra_body": {
+      "prompt": {"id": "<id-сохранённого-промпта>"},
+      "tools": [
+        {"type": "file_search", "vector_store_ids": ["<id-поискового-индекса>"], "max_num_results": 5}
+      ]
+    },
+    "note": "Инструкция и индекс агента работают в облаке; MVP отправляет только ТЗ. Ids берутся из сниппета вызова в карточке агента AI Studio."
   },
   {
-    "name": "Тестовый агент 3",
+    "name": "OpenAI-совместимый endpoint",
     "base_url": "https://example.com/v1",
-    "api_key_env": "AGENT_3_API_KEY",
+    "api_key_env": "AGENT_API_KEY",
     "model": "укажите-модель",
-    "note": "Замените base_url, model и имя переменной ключа на свои."
+    "note": "Любой OpenAI-совместимый сервис: заполните base_url, model и ключ."
   }
 ]

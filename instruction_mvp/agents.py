@@ -50,11 +50,17 @@ def load_agents(path: Path | None = None) -> list[Agent]:
         if not isinstance(entry, dict):
             continue
         try:
+            extra_headers = entry.get("extra_headers", {})
+            extra_body = entry.get("extra_body", {})
             config = LLMConfig(
                 api_key=_resolve_key(entry),
                 model=str(entry.get("model", "")).strip(),
                 base_url=str(entry.get("base_url", "")).strip().rstrip("/"),
                 timeout=int(entry.get("timeout", 120)),
+                auth_scheme=str(entry.get("auth_scheme", "Bearer")).strip() or "Bearer",
+                api=str(entry.get("api", "chat_completions")).strip() or "chat_completions",
+                extra_headers=extra_headers if isinstance(extra_headers, dict) else {},
+                extra_body=extra_body if isinstance(extra_body, dict) else {},
             )
         except (TypeError, ValueError):
             continue
