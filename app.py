@@ -218,11 +218,12 @@ with compose_tab:
             st.markdown(st.session_state.draft_editor)
             first, second = st.columns(2)
             first.download_button("Скачать Markdown", markdown_bytes(st.session_state.draft_editor),
-                                  "instruction_draft.md", "text/markdown", use_container_width=True)
+                                  "instruction_draft.md", "text/markdown", use_container_width=True,
+                                  key="result_md")
             second.download_button("Скачать DOCX", docx_bytes(st.session_state.draft_editor),
                                    "instruction_draft.docx",
                                    "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
-                                   use_container_width=True)
+                                   use_container_width=True, key="result_docx")
 
     if generate_clicked:
         if not st.session_state.get("tz", "").strip():
@@ -309,15 +310,15 @@ with metrics_tab:
         if st.session_state.draft_editor.startswith("STATUS: NEED_INFO"):
             st.info("При NEED_INFO выгружаются только вопросы, инструкция ещё не сформирована.")
             st.download_button("Скачать вопросы (Markdown)", markdown_bytes(st.session_state.draft_editor),
-                               "questions.md", "text/markdown")
+                               "questions.md", "text/markdown", key="metrics_questions")
         elif st.session_state.draft_editor.strip():
             name = "instruction_approved" if verdict == "approved" else "instruction_draft"
             first, second = st.columns(2)
             first.download_button("Скачать Markdown", markdown_bytes(st.session_state.draft_editor),
-                                  name + ".md", "text/markdown", use_container_width=True)
+                                  name + ".md", "text/markdown", use_container_width=True, key="metrics_md")
             second.download_button("Скачать DOCX", docx_bytes(st.session_state.draft_editor), name + ".docx",
                                    "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
-                                   use_container_width=True)
+                                   use_container_width=True, key="metrics_docx")
         else:
             st.info("Сначала добавьте черновик.")
     st.divider(); st.subheader("Метрики пилота")
