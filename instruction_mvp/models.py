@@ -13,8 +13,13 @@ class SourceInput:
     scenario: str = ""
     context: str = ""
     comments: str = ""
+    free_form: bool = False
 
     def missing_required(self) -> list[str]:
+        if self.free_form:
+            # Свободный формат: полноту данных оценивает модель (STATUS: NEED_INFO),
+            # форма требует только непустой ТЗ.
+            return [] if self.context.strip() else ["ТЗ и контекст задачи"]
         fields = (
             ("audience", "Для кого инструкция (роль или группа)"),
             ("location", "Где находится функция в интерфейсе"),

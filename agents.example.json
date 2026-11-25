@@ -1,0 +1,23 @@
+[
+  {
+    "name": "Yandex GPT — Технический писатель (тест 1)",
+    "base_url": "https://llm.api.cloud.yandex.net/v1",
+    "api_key_env": "YANDEX_API_KEY_1",
+    "model": "qwen3.6-35b",
+    "note": "Agent Atelier: Технический писатель. Endpoint и модель проверить в консоли Yandex Cloud."
+  },
+  {
+    "name": "Тестовый агент 2",
+    "base_url": "https://example.com/v1",
+    "api_key_env": "AGENT_2_API_KEY",
+    "model": "укажите-модель",
+    "note": "Замените base_url, model и имя переменной ключа на свои."
+  },
+  {
+    "name": "Тестовый агент 3",
+    "base_url": "https://example.com/v1",
+    "api_key_env": "AGENT_3_API_KEY",
+    "model": "укажите-модель",
+    "note": "Замените base_url, model и имя переменной ключа на свои."
+  }
+]
