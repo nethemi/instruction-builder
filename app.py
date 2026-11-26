@@ -39,13 +39,18 @@ html,body,[class*="css"]{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI"
 
 DEFAULTS = {"step": 1, "draft": "", "draft_editor": "", "previous_draft": "", "report": None,
             "generation_seconds": None, "last_generation_status": None, "tz": "", "extra_data": "",
-            "audience": "", "doc_type": "Внутренняя", "ext_rules": None, "ext_example": None,
+            "additions": "", "audience": "", "doc_type": "Внутренняя", "ext_rules": None, "ext_example": None,
             "revision_comments": ""}
 for key, value in DEFAULTS.items():
     st.session_state.setdefault(key, value)
 if st.session_state.get("pending_draft") is not None:
     st.session_state.draft_editor = st.session_state.pop("pending_draft")
     st.session_state.draft = st.session_state.draft_editor
+# Отложенные изменения полей формы: применяем ДО создания виджетов (Streamlit запрещает
+# менять session_state ключа виджета после его создания в текущем прогоне).
+for _pending, _target in (("pending_tz", "tz"), ("pending_audience", "audience"), ("pending_extra", "extra_data")):
+    if st.session_state.get(_pending) is not None:
+        st.session_state[_target] = st.session_state.pop(_pending)
 
 
 def stepper_html(current: int) -> str:
@@ -113,6 +118,9 @@ def attachments_text(files) -> str:
 
 def current_source(extra: str = "") -> SourceInput:
     context = st.session_state.get("tz", "").strip()
+    additions = st.session_state.get("additions", "").strip()
+    if additions:
+        context = (context + "\n\n# Дополнительные данные\n" + additions).strip()
     if extra.strip():
         context = (context + "\n\n# Приложенные материалы\n" + extra.strip()).strip()
     return SourceInput(
@@ -244,10 +252,8 @@ if st.session_state.step == 1:
                 for error in parsed.errors:
                     st.error(error)
                 if parsed.valid and parsed.status == "NEED_INFO":
-                    st.session_state.extra_data = ""
                     st.rerun()
                 elif parsed.valid:
-                    st.session_state.tz = source.context
                     st.session_state.step = 2
                     st.rerun()
             except (ValueError, LLMError) as error:
@@ -262,8 +268,8 @@ if st.session_state.step == 1:
                 if not addition:
                     st.error("Добавьте данные или файл.")
                 else:
-                    st.session_state.tz = st.session_state.tz.rstrip() + "\n\n# Дополнительные данные\n" + addition
-                    st.session_state.extra_data = ""
+                    st.session_state.additions = (st.session_state.get("additions", "") + "\n\n" + addition).strip()
+                    st.session_state.pending_extra = ""
                     st.session_state.last_generation_status = None
                     do_generate()
         else:
@@ -271,9 +277,11 @@ if st.session_state.step == 1:
                 if not st.session_state.get("tz", "").strip():
                     st.error("Опишите задачу.")
                 else:
+                    st.session_state.additions = ""
                     do_generate(attachments_text(uploaded))
         if btn_clear.button("Очистить", use_container_width=True):
-            st.session_state.tz = ""; st.session_state.audience = ""; st.session_state.extra_data = ""
+            st.session_state.pending_tz = ""; st.session_state.pending_audience = ""
+            st.session_state.additions = ""
             st.session_state.last_generation_status = None; st.session_state.draft_editor = ""
             st.rerun()
 
