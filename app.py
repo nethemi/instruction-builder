@@ -25,7 +25,7 @@ html,body,[class*="css"]{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI"
 [data-testid="stFileUploader"] section{border:1.5px dashed rgba(0,0,0,.3);border-radius:12px;padding:1.1rem 1rem}
 [data-testid="stFileUploader"] section:hover{border-color:#2e3a4e}
 
-.stepper{display:flex;align-items:center;gap:14px;margin:0 auto 1.6rem auto;max-width:760px}
+.stepper{display:flex;align-items:center;gap:14px;margin:2.8rem auto 1.6rem auto;max-width:760px}
 .step{display:flex;align-items:center;gap:10px;white-space:nowrap}
 .step .circle{width:30px;height:30px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;
   font-weight:700;border:1.5px dashed rgba(0,0,0,.35);color:rgba(0,0,0,.5)}
