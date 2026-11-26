@@ -1,0 +1,50 @@
+[
+  {
+    "name": "Агент 1 — Responses API",
+    "base_url": "https://ai.api.cloud.yandex.net/v1",
+    "api_key_env": "YANDEX_API_KEY",
+    "auth_scheme": "Bearer",
+    "api": "responses",
+    "extra_headers": {"OpenAI-Project": "folder_id"},
+    "extra_body": {
+      "prompt": {"id": "prompt_1_id"},
+      "tools": [
+        {"type": "file_search", "vector_store_ids": ["vector_store_1"], "max_num_results": 5},
+        {"type": "code_interpreter", "container": {"type": "auto", "file_ids": []}}
+      ]
+    },
+    "note": "Свой промпт и индекс в облаке; MVP отправляет только ТЗ."
+  },
+  {
+    "name": "Агент 2 — Responses API",
+    "base_url": "https://ai.api.cloud.yandex.net/v1",
+    "api_key_env": "YANDEX_API_KEY",
+    "auth_scheme": "Bearer",
+    "api": "responses",
+    "extra_headers": {"OpenAI-Project": "folder_id"},
+    "extra_body": {
+      "prompt": {"id": "prompt_2_id"},
+      "tools": [
+        {"type": "file_search", "vector_store_ids": ["vector_store_1"], "max_num_results": 5},
+        {"type": "code_interpreter", "container": {"type": "auto", "file_ids": []}}
+      ]
+    },
+    "note": "Свой промпт и индекс в облаке; MVP отправляет только ТЗ."
+  },
+  {
+    "name": "Агент 3 — Responses API (другой индекс)",
+    "base_url": "https://ai.api.cloud.yandex.net/v1",
+    "api_key_env": "YANDEX_API_KEY",
+    "auth_scheme": "Bearer",
+    "api": "responses",
+    "extra_headers": {"OpenAI-Project": "folder_id"},
+    "extra_body": {
+      "prompt": {"id": "prompt_3_id"},
+      "tools": [
+        {"type": "file_search", "vector_store_ids": ["vector_store_2"], "max_num_results": 5},
+        {"type": "code_interpreter", "container": {"type": "auto", "file_ids": []}}
+      ]
+    },
+    "note": "Свой промпт и индекс в облаке; MVP отправляет только ТЗ."
+  }
+]
