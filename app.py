@@ -39,7 +39,7 @@ html,body,[class*="css"]{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI"
 
 DEFAULTS = {"step": 1, "draft": "", "draft_editor": "", "previous_draft": "", "report": None,
             "generation_seconds": None, "last_generation_status": None, "tz": "", "extra_data": "",
-            "additions": "", "audience": "", "doc_type": "Внутренняя", "ext_rules": None, "ext_example": None,
+            "additions": "", "audience": "", "doc_type": "Внутренняя",
             "revision_comments": ""}
 for key, value in DEFAULTS.items():
     st.session_state.setdefault(key, value)
@@ -63,29 +63,6 @@ def stepper_html(current: int) -> str:
             parts.append('<div class="line"></div>')
     parts.append("</div>")
     return "".join(parts)
-
-
-def read_text_file(file, label: str) -> str:
-    if file is None:
-        return ""
-    data = file.getvalue()
-    if len(data) > MAX_FILE_BYTES:
-        raise ValueError(f"Файл {file.name} больше 2 МБ.")
-    try:
-        return data.decode("utf-8-sig")
-    except UnicodeDecodeError as error:
-        raise ValueError(f"Файл {file.name} ({label}) должен быть в UTF-8.") from error
-
-
-def external_kb(rules_file, example_file) -> KnowledgeBase:
-    """Внешняя ветка: общие системный промпт и шаблон + загруженные правила и пример внешних инструкций."""
-    internal = load_internal_kb()
-    return KnowledgeBase(
-        system_prompt=internal.system_prompt,
-        rules=read_text_file(rules_file, "правила"),
-        template=internal.template,
-        example=read_text_file(example_file, "пример"),
-    )
 
 
 def attachments_text(files) -> str:
@@ -134,7 +111,10 @@ def current_source(extra: str = "") -> SourceInput:
 
 def current_kb() -> KnowledgeBase:
     if st.session_state.get("doc_type") == "Внешняя":
-        return external_kb(st.session_state.get("ext_rules"), st.session_state.get("ext_example"))
+        # Правила и пример внешних инструкций агент берёт из своего поискового индекса —
+        # локально используем только общие системный промпт и шаблон.
+        internal = load_internal_kb()
+        return KnowledgeBase(system_prompt=internal.system_prompt, rules="", template=internal.template, example="")
     return load_internal_kb()
 
 
@@ -201,12 +181,7 @@ if st.session_state.step == 1:
         st.radio("Тип инструкции", ["Внутренняя", "Внешняя"], key="doc_type", horizontal=True,
                  label_visibility="visible")
         if st.session_state.doc_type == "Внешняя":
-            st.caption("Внешняя ветка: системный промпт и шаблон общие, правила и пример — внешние.")
-            ext_left, ext_right = st.columns(2)
-            with ext_left:
-                st.file_uploader("Правила внешних инструкций (.md, .txt) *", type=["md", "txt"], key="ext_rules")
-            with ext_right:
-                st.file_uploader("Пример внешней инструкции (.md, .txt) *", type=["md", "txt"], key="ext_example")
+            st.caption("Внешняя ветка: системный промпт и шаблон общие; правила и пример внешних инструкций агент берёт из своего поискового индекса — загружать файлы не нужно.")
 
         st.text_input("Для кого инструкция", key="audience", placeholder="Роль или группа сотрудников / клиентов")
         st.text_area("Опишите задачу", key="tz", height=200,
@@ -216,7 +191,7 @@ if st.session_state.step == 1:
         st.caption("PDF, PNG, JPG, TXT, DOCX, MD. До 25 МБ на файл.")
         try:
             kb_check = current_kb()
-            if kb_check.missing():
+            if kb_check.missing() and st.session_state.doc_type != "Внешняя":
                 st.warning("Не загружены: " + ", ".join(kb_check.missing()))
         except ValueError as error:
             st.error(str(error))
@@ -307,6 +282,13 @@ elif st.session_state.step == 2:
             st.code(diff or "Изменений нет", language="diff")
         else:
             st.info("Сравнение появится после первой доработки.")
+        if st.session_state.draft_editor.strip() and not st.session_state.draft_editor.startswith("STATUS: NEED_INFO"):
+            dl_first, dl_second = st.columns(2)
+            dl_first.download_button("Скачать Markdown", markdown_bytes(st.session_state.draft_editor),
+                                     "instruction_draft.md", "text/markdown", use_container_width=True, key="step2_md")
+            dl_second.download_button("Скачать DOCX", docx_bytes(st.session_state.draft_editor), "instruction_draft.docx",
+                                      "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+                                      use_container_width=True, key="step2_docx")
         back, to_eval = st.columns([1, 1.6])
         if back.button("Назад", use_container_width=True):
             st.session_state.step = 1; st.rerun()
