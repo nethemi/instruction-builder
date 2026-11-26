@@ -79,10 +79,14 @@ def _request(config: LLMConfig,messages: list[dict[str,str]],transport: Callable
 def _extract_responses_text(data: dict[str,Any])->str:
     texts=[]
     for item in data.get("output",[]) if isinstance(data,dict) else []:
-        if not isinstance(item,dict) or item.get("type")!="message":continue
-        for content in item.get("content",[]):
-            if isinstance(content,dict) and content.get("type") in ("output_text","text") and content.get("text"):
-                texts.append(content["text"])
+        if not isinstance(item,dict):continue
+        if item.get("type")=="message":
+            for content in item.get("content",[]):
+                if isinstance(content,dict) and content.get("type") in ("output_text","text") and content.get("text"):
+                    texts.append(content["text"])
+        # Некоторые совместимые API кладут текст прямо в output_text-элемент
+        elif item.get("type") in ("output_text","text") and item.get("text"):
+            texts.append(item["text"])
     return "\n".join(texts)
 
 def _request_responses(config: LLMConfig,user_text: str,transport: Callable|None=None)->str:
@@ -93,7 +97,15 @@ def _request_responses(config: LLMConfig,user_text: str,transport: Callable|None
     if transport is not None:return transport(url,payload,config.timeout)
     data=_post_json(url,payload,_headers(config),config.timeout,config.api_key)
     text=_extract_responses_text(data)
-    if not text:raise LLMError("В ответе Responses API нет текстового вывода.")
+    if not text:
+        status=data.get("status") if isinstance(data,dict) else None
+        error=data.get("error") if isinstance(data,dict) else None
+        output_types=[item.get("type") for item in data.get("output",[]) if isinstance(item,dict)] if isinstance(data,dict) else []
+        raise LLMError(
+            "В ответе Responses API нет текстового вывода. "
+            f"status={status!r}, error={error!r}, вывод: {output_types or 'пусто'}. "
+            "Проверьте, что промпт агента в облаке возвращает STATUS: READY/NEED_INFO."
+        )
     return text
 
 def _check_prompt(system: str,user: str)->None:
