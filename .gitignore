@@ -1,7 +1,6 @@
 .env
 .env.*
 !.env.example
-agents.json
 .venv/
 node_modules/
 __pycache__/
