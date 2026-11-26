@@ -22,19 +22,19 @@ st.set_page_config(page_title="Конструктор инструкций", lay
 st.markdown("""<style>
 .block-container{max-width:1320px;padding-top:2rem;padding-bottom:4rem}
 html,body,[class*="css"]{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
-[data-testid="stFileUploader"] section{border:1.5px dashed rgba(128,128,128,.45);border-radius:12px;padding:1.1rem 1rem}
-[data-testid="stFileUploader"] section:hover{border-color:#5eead4}
+[data-testid="stFileUploader"] section{border:1.5px dashed rgba(0,0,0,.3);border-radius:12px;padding:1.1rem 1rem}
+[data-testid="stFileUploader"] section:hover{border-color:#2e3a4e}
 
 .stepper{display:flex;align-items:center;gap:14px;margin:0 auto 1.6rem auto;max-width:760px}
 .step{display:flex;align-items:center;gap:10px;white-space:nowrap}
 .step .circle{width:30px;height:30px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;
-  font-weight:700;border:1.5px dashed rgba(128,128,128,.6);color:rgba(200,200,200,.75)}
-.step.active .circle{background:#5eead4;border:1.5px solid #5eead4;color:#0b2530}
-.step.done .circle{border-style:solid;border-color:#5eead4;color:#5eead4}
-.step .label{color:rgba(200,200,200,.75);font-size:15px}
-.step.active .label{color:#fff;font-weight:600}
-.step.done .label{color:#5eead4}
-.stepper .line{flex:1;height:1.5px;background:rgba(128,128,128,.35);min-width:30px}
+  font-weight:700;border:1.5px dashed rgba(0,0,0,.35);color:rgba(0,0,0,.5)}
+.step.active .circle{background:#2e3a4e;border:1.5px solid #2e3a4e;color:#fff}
+.step.done .circle{border-style:solid;border-color:#2e3a4e;color:#2e3a4e}
+.step .label{color:rgba(0,0,0,.5);font-size:15px}
+.step.active .label{color:#1a1a1a;font-weight:600}
+.step.done .label{color:#2e3a4e}
+.stepper .line{flex:1;height:1.5px;background:rgba(0,0,0,.18);min-width:30px}
 </style>""", unsafe_allow_html=True)
 
 DEFAULTS = {"step": 1, "draft": "", "draft_editor": "", "previous_draft": "", "report": None,
